@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Funny Fake News</title>
+    <style>
+        :root {
+            --bg: #0f0d0a;
+            --text: #f5efe6;
+            --muted: #c7bea9;
+            --accent: #e9dccf;
+            --border: rgba(245, 239, 230, 0.18);
+            --button: #111;
+            --button-hover: #28241f;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: radial-gradient(circle at top, rgba(245,239,230,0.06), transparent 40%), var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 32px;
+        }
+
+        .ticker {
+            background: rgba(255,255,255,0.06);
+            color: var(--accent);
+            padding: 12px 26px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            border: 1px solid rgba(245,239,230,0.12);
+            border-radius: 999px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            max-width: 860px;
+            width: 100%;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .headline {
+            font-size: clamp(1.4rem, 2vw, 2.2rem);
+            text-align: center;
+            line-height: 1.5;
+            padding: 36px 36px 28px;
+            font-weight: 300;
+            transition: opacity 0.2s ease;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0 36px;
+        }
+
+        .analysis {
+            padding: 24px 36px 32px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-line;
+            transition: opacity 0.2s ease;
+        }
+
+        .analysis strong {
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background: var(--button);
+            color: var(--text);
+            border: 1px solid rgba(245,239,230,0.14);
+            padding: 14px 30px;
+            font-size: 15px;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            font-weight: 700;
+            border-radius: 999px;
+            transition: transform 0.2s ease, background 0.2s ease;
+            box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+        }
+
+        button:hover {
+            background: var(--button-hover);
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 680px) {
+            body { padding: 20px; }
+            .headline { padding: 24px 24px 20px; }
+            .analysis { padding: 16px 24px 24px; }
+            .divider { margin: 0 24px; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ticker">⚡ BREAKING NEWS ⚡</div>
+
+    <div class="card">
+        <div class="headline" id="headline">{{ headline }}</div>
+        <hr class="divider">
+        <div class="analysis" id="analysis">{{ analysis }}</div>
+    </div>
+
+    <div class="buttons">
+        <button id="generateBtn" onclick="newHeadline()">GENERATE NEXT HEADLINE</button>
+        <button onclick="downloadHeadlines()">DOWNLOAD HEADLINES</button>
+    </div>
+
+    <script>
+        const generatedHeadlines = [{{ headline|tojson }}];
+
+        async function newHeadline() {
+            const btn = document.getElementById('generateBtn');
+            const headlineEl = document.getElementById('headline');
+            const analysisEl = document.getElementById('analysis');
+
+            headlineEl.style.opacity = '0.4';
+            analysisEl.style.opacity = '0.4';
+            btn.disabled = true;
+            btn.textContent = 'CONSULTING ANALYST...';
+
+            try {
+                const res = await fetch('/generate');
+                if (!res.ok) throw new Error('Server error');
+                const data = await res.json();
+
+                headlineEl.textContent = data.headline;
+                analysisEl.textContent = data.analysis;
+                generatedHeadlines.push(data.headline);
+
+            } catch (err) {
+                headlineEl.textContent = 'Something went wrong. Try again.';
+                analysisEl.textContent = '';
+            } finally {
+                headlineEl.style.opacity = '1';
+                analysisEl.style.opacity = '1';
+                btn.disabled = false;
+                btn.textContent = 'GENERATE NEXT HEADLINE';
+            }
+        }
+
+        function downloadHeadlines() {
+            if (generatedHeadlines.length === 0) {
+                alert('Generate some headlines first.');
+                return;
+            }
+            const content = generatedHeadlines.join('\n');
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'generated_headlines.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

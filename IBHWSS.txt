@@ -1,0 +1,41 @@
+IBHWSS
+
+Idea = What we are building is Fake News Generator 
+    example = "Imran Khan spoted riding on a donkey at walton road'
+
+Building = A fuuny and a fake news, the main core concept is this, simple 
+
+How = lists of words combining and genrating a news, so how it will work, 
+    subject + Action + Place 
+
+    so this means we gonna create a set of lists 3 and we gonna pick one one word from each of them and combine them  and create a funny news 
+
+Which Concepts = random-module(to get random values), lists(to store words), print(to print the output), input(to take input from user whether wanna generate another news or not), while(repeat the code until the user says no), f-string(to return the values),  
+
+SuedoCode =
+    step 01 - import random 
+    step 02 - objects subjects and actions list
+    step 03 - using the random module to pick words from lists
+    step 04 - combine the word into headline using string formating 
+    step 05 - print the headline 
+    step 06 - ask the user to genrate another news or not
+    step 07 - if yes repeat if not programs end here! 
+
+Stretching = will discuss after this development, 
+    What I have stretched in this, i let the user download the news he was genrating in the txt formating
+    I made AI integration claude had suggested me to do here it is (AI adds a fake analysis (keeps your random logic)
+    Your random generator makes the headline, then AI adds a fake "political analyst comment" below it.) Example 
+    ⚡ BREAKING NEWS ⚡
+
+    BREAKING NEWS: Shahbaz Sharif caught on camera trying to do 
+    a wheelie on a CD-70 bike during a press conference.
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Allah miya, yaar, this is the kind of leadership Pakistan 
+    deserves, a man of the people, on a CD-70, mid-conference.
+
+    Credibility Score: 8/10
+    National Crisis Level: DEFCON 1
+
+    [ GENERATE NEXT HEADLINE ]
